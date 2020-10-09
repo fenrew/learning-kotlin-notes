@@ -1,0 +1,21 @@
+TOP LEVEL FUNCTIONS
+fun topLevel() = 1
+
+MEMBER FUNCTION
+class A {
+    fun memeber() = 2
+}
+
+LOCAL FUNCTION
+fun other() {
+    fun local() = 3
+}
+
+
+
+// EXTENSIONS
+fun String.lastChar() = this.get(this.length - 1)
+val c: Char = "abc".lastChar()
+
+// You need to import it for it to work in other files (?)
+import com.example.util.lastChar
