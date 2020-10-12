@@ -30,6 +30,9 @@ var list = listOf("Java", "Kotlin")
 var list = listOf("Java", "Kotlin")
 list.add("Javascript")
 
+// Create empty array
+var list = listOf<String>()
+
 // you can only add new elements to a val list if it is mutableListOf
 // .push
 val list = mutableListOf("Java")
@@ -127,6 +130,20 @@ val number = try {
 }
 
 // METHODS
+// .length
+Array.length
+String.length
+
+// parseInt .toInt .toDouble .toIntOrNull
+"123".toInt() // 123
+"1e-10".toDouble() // 1.0E-10
+"xx".toInt() // NumberFormatException
+"xx".toIntOrNull() // null
+
+// equal .eq
+fun getAnswer() = 42
+getAnswer() eq 42 // prints: OK
+getAnswer() eq 43 // prints: Error: 42 != 43
 
 // .reapeat
 repeat(5){
@@ -142,3 +159,42 @@ list.contains(element)
 
 // .lastChar
 fun String.lastChar() = this.get(this.length - 1)
+val c: Char = "abc".lastChar()
+
+// .getOrNull
+val list = listOf("Markus")
+print(list.getOrNull(0), list.getOrNull(1)) // "Markus", null
+// gets the index if it exists or null if it doesnt
+
+// .isLetter() 
+"a".isLetter() // true
+
+// .isDigit()
+3.isDigit() // true
+
+// .isLetterOrDigit
+"%".isLetterOrDigit() // false
+
+// .count
+// Returns the number of elements matching the given predicate
+listOf("Markus", "Fenrew", 3).count() :Int // Returns the count of ints in the list (i think...)
+secret.zip(guess).count { it.first == it.second }
+
+// .zip
+listOf("A", "B").zip("Markus", "Fenrew") // Returns [(A, Markus), (B, Fenrew)]
+// Length is equal to the shortest array
+
+// .instanceOf
+if(any is String){
+    any.toUpperCase()
+}
+
+// REGEX
+// .match
+val regex = "\\d{2}\\.\\d{2}\\.\\d{4}".toRegex() 
+val regex = """\d{2}\.\d{2}\.\d{4}""" //or it can be written like this
+regex.matches("15.02.1992") // true
+regex.matches("15.02.92") // false
+
+// CLASS
+data class Evaluation(val rightPosition: Int, val wrongPosition: Int)

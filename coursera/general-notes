@@ -19,3 +19,66 @@ val c: Char = "abc".lastChar()
 
 // You need to import it for it to work in other files (?)
 import com.example.util.lastChar
+
+// Member vs Extension. The member is prioritized
+fun String.get(index: Int) = '*'
+print("abc".get(1)) // "b"
+ 
+// Extensions to class Parent and Child
+open class Parent
+class Child: Parent()
+fun Parent.foo() = "parent"
+fun Child.foo() = "child"
+val parent: Parent = Child()
+println(parent.foo()) // parent
+
+
+// Nullable types
+val s1: String = "Can not be null"
+val s2: String? = null // This can be string or null
+
+s2?.length // If s2 is not null, then execute .length (same as JS)
+
+val length: Int? = s?.length
+val length: Int = s?.length ?: 0
+
+val a: Int? = null
+val s1 = (a ?: 0) + 2 // s1 == 2
+
+You can not use .length or .value or whatever without '?' or another means of checking if it is null
+e.g.
+fun isFoo: Name? = n.value == "foo"
+// this will throw an error while compiling. so you need to use: n?.value
+
+
+val x: Int? = 1
+val y: Int = 2
+val s1 = x ?: 0 + y // 1
+val s2 = x ?: (0 + y) // 1
+val s3 = (x ?: 0) + y // 3
+
+
+List<Int?>   // Means that every element may be null or Int
+List<Int>?   // Means that whole list is either a list or null
+
+
+// example
+fun foo(list1: List<Int?>, list2: List<Int>?) { 
+    list1.size
+    list2?.size
+
+    val i: Int? = 
+      list1.get(0)
+    val j: Int? = 
+      list2?.get(0)
+}
+
+// Safe cast as?
+val s = if (a is String) a else null // no
+// instead write what is underneath:
+val s:String? = any as? String // yes
+
+
+// Not-null assertion (Try to aviod using it)
+foo!! // foo != null => foo     OR     foo == null => NPE
+
