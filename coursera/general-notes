@@ -82,3 +82,208 @@ val s:String? = any as? String // yes
 // Not-null assertion (Try to aviod using it)
 foo!! // foo != null => foo     OR     foo == null => NPE
 
+
+// Lambdas
+Syntax: { x: Int, y: Int -> x + y}
+// left side is the parameters, and right side is the body
+ex:
+list.any { i: Int -> i > 0}
+// if there is only 1 arg you can use 'it'
+list.any {it > 0}
+// you can write multilines inside lambda and the last expression is the result
+list.any {
+    println(any)
+    it > 0
+}
+
+// Can be destructed
+map.mapValues {(key, value) ->"$key, $value"}
+//if one of the is not used, then leeave it as '_'
+
+
+// Function types
+val sum: (Int, Int) -> Int = { x, y -> x + y }
+
+() -> Int? // return type is nullable
+(() -> Int)? // the variable is nullable
+
+val isEven: Int (Int) -> Boolean = { i: Int -> i%2 == 0 } // Int as argument and returns a Boolean
+
+You can store lambda in a variable (like above) but a function can NOT be stored in a variable (use function reference instead as shown below)
+
+val predicate = ::isEven // stores a referance to the function in a variable
+listOf(1, 2, 3).any(::isEven) // true
+
+Bound and non-bound references:
+class Person(val name: String, val age: Int){
+    fun isOlder(ageLimit: Int) = age > ageLimit
+}
+Non-bound: val age = alice::isOlder
+Bound: val age = Person::isOlder
+
+
+// HOW RETURN WORKS
+fun duplicateNonZero(list: List<Int>): List<Int> {
+    return list.flatMap @l{
+        if(it == 0) return listOf() // NB: If it == 0 it returns [] out of the whole function, and not out of flatMap
+        // if(it == 0) return@flatMap listOf() // Returns out of the flatMap and not the whole function
+        // if(it == 0) return@l listOf() // Also returns out of the flatMap, but here I use the label @l
+        listOf(it, it)
+    }
+}
+println(duplicateNonZero(listOf(3, 0, 5))) // []
+// you can however use the return@flatMap
+
+// alternatively to return@l || return@flatMap you can make an anonymous function
+fun duplicateNonZero(list: List<Int>): List<Int>{
+    return list.flatMap(fun (e): List<Int> {
+        if(e == 0) return listOf()
+        return listOf(it, it)
+    })
+}
+
+
+
+// CLASS
+class Person(val name: String, val age: Int)
+people.maxBy { it.age }
+
+people.maxBy(Person::age) // Person is class, and age is memeber
+
+
+val foo1 = run {
+    42
+}
+val foo2 = get() {
+    45
+}
+
+
+interface Session {
+    val user: User
+}
+fun analyzeUserSession(session: Session){
+    val user = session.user
+    if(user is FacebookUser) {
+        println(user.accountId)
+    }
+}
+
+// Lazy property
+// it only computed once when it is called for the first time
+val lazyValue: String by lazy {
+    println("computed")
+    "Hello"
+}
+println(lazyValue) // "computed" "Hello"
+println(lazyValue) // "Hello"
+
+// Late initialization
+// it is so you dont have to have null as the initial value and thus struggle with nullability
+class KotlinActivity: Activity() {
+    lateinit var myData: MyData
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        myData = intent.getParcelableExtra("MY_DATA")
+    }
+}
+// Can NOT be val, can't be nullable or primitive type
+// Only reference types might be initialized with null
+// Check if it has been initialized: this::lateinitVar.isInitialized // true or false
+
+
+// Final modifier (default in kotlin): Cannot be overridden
+// Open modifier: Can be overridden
+// Abstract modifier: Must be overridden (can't have an implementation)
+// Override modifier (mandatory in kotlin): Overrides a member in a superclass or interface
+
+// public: visible everywhere
+// internal: visible in the module
+// protected (only as class member): visible in the class and its subclasses
+// private (class member): visible in the class only
+// private (top-level): in the same file 
+
+
+interface Base
+class BaseImpl : Base
+open class Parent(val name: String)
+class Child(name: String) : Parent(name)
+class Child : Parent {
+    constructor(name: String, param: Int) : super(name)
+}
+
+
+enum class Color {
+    BLUE, ORANGE, RED
+}
+
+fun getDescription(color: Color) = 
+    when (color) {
+        BLUE -> "cold"
+        ORANGE -> "mild"
+        RED -> "hot"
+    }
+
+enum class Color(
+    val r: Int, val g: Int, val b: Int
+) {
+    BLUE(0, 0, 255), ORANGE(255, 165, 0), RED(255, 0, 0);
+
+    fun rgb() = (r * 256 + g) * 256 + b
+}
+
+
+// data class
+class Foo(val first: Int, val second: Int)
+data class Bar(val first: Int, val second: Int)
+
+val f1 = Foo(1, 2)
+val f2 = Foo(1, 2)
+print(f1 == f2) // false
+
+val b1 = Bar(1,2)
+val b2 = Bar(1,2)
+print(b1 == b2) // true
+
+// I think that if you put the values inside of the class, then they wont be compared even if they are different for two instances of the same class (or data class?)
+
+
+// object = singelton
+object KSingelton {
+    fun foo() {}
+}
+// I think you only create one static instance here and not several
+
+
+// Constants
+const (for primitive types and String)
+const val answer = 12 //compile time constant
+
+@JvmField
+@JvmStatic
+
+
+// Generic functions
+// the <T> makes it generic meaning it can take any types like Int or String
+fun <T> List<T>.filter(predicate: (T) -> Boolean) : List<T>
+
+fun use1(ints: List<Int>) {
+    ints.filter {it > 0}
+}
+
+fun use2(strings: List<String>) {
+    strings.filter {it.isNotEmpty()}
+}
+
+// making it non-nullable upper bound. Makes it so that the list can't have null
+fun <T : Any> List<T?>.filterNotNull(): List<T> {}
+}
+
+
+// Destructuring in Lambdas
+One param: { a -> ... }
+Two param: { a, b -> ... }
+A destructured pair: { (a, b) -> ... }
+A destructured pair and another param: { (a, b), c -> ... }

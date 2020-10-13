@@ -1,4 +1,4 @@
-// TYPES: String, Int, Unit, Array, Char (?), enum class,
+// TYPES: String, Int, Unit, Array, Char (?), enum class, List, Set
 
 // VARIABLES
 val name: String = "Markus"
@@ -29,6 +29,9 @@ var list = listOf("Java", "Kotlin")
 // ARRAYS
 var list = listOf("Java", "Kotlin")
 list.add("Javascript")
+
+list["Java"] // if not there, returns null ??
+list.getValue("Java") // if not there, returns NoSuchElementsException ??
 
 // Create empty array
 var list = listOf<String>()
@@ -129,9 +132,10 @@ val number = try {
     // or 'return' if i want that instead
 }
 
-// METHODS
-// .length
-Array.length
+// METHODS / Extensions
+// .length .size
+Array.length // Works??
+Array.size
 String.length
 
 // parseInt .toInt .toDouble .toIntOrNull
@@ -154,8 +158,10 @@ repeat(5){
 // .localeCompare
 myString.compareTo(yourString)
 
-// .includes
+// .includes .contains (use .any instead!)
 list.contains(element)
+"abba".contains("ab") // true
+// .contains will be removed soon
 
 // .lastChar
 fun String.lastChar() = this.get(this.length - 1)
@@ -180,14 +186,75 @@ print(list.getOrNull(0), list.getOrNull(1)) // "Markus", null
 listOf("Markus", "Fenrew", 3).count() :Int // Returns the count of ints in the list (i think...)
 secret.zip(guess).count { it.first == it.second }
 
-// .zip
-listOf("A", "B").zip("Markus", "Fenrew") // Returns [(A, Markus), (B, Fenrew)]
-// Length is equal to the shortest array
-
 // .instanceOf
 if(any is String){
     any.toUpperCase()
 }
+
+// .isEmpty
+String.isEmpty()
+Array.isEmpty()
+
+// .filter
+employees.filter() { it.city == City.OSLO }.map { it.age }.average()
+
+// .map
+// .flatMap
+// .flatten   JS version: .flat()
+// .forEach
+// .find
+// .reduce
+// .any
+list.any() { it == 2 }
+// checks if ANY of the elements is equal to 2, if yes  returns true else false
+
+// .all
+list.all() { it == 2 }
+// checks if ALL of the elements is equal to 2, if yes  returns true else false
+
+// .none
+list.none() { it == 2 }
+// checks if NONE of the elements is equal to 2, if yes  returns true else false
+
+// .first .firstOrNull
+list.first() {it == 2}
+// gets the first element that is equal to 2
+
+// .partition
+list.partition { it == 2 }
+// devides the list into two lists, one that only has 2's, and one that dont
+val (young, old) = listOf(4, 7, 1, 10, 5, 15).partition() { it < 10 }
+// young will be any number below 10, and old will be any number >= 10
+
+// .groupBy
+list.groupBy { it.age }
+// devides the list into several lists depending if they are the same age or not
+
+// .associate
+listOf(1, 2).associate() { 'a' + it to 10 * it} // returns (a, 10), (b, 20)   not sure if object, list or whateves..
+
+// .zip
+listOf("A", "B").zip("Markus", "Fenrew") // Returns [(A, Markus), (B, Fenrew)]
+// Length is equal to the shortest array
+
+// .zipWithNext
+listOf("A", "B").zipWithNext() // returns [(A, B)]
+
+// .distinct
+listOf("A", "B", "A").distinct() // returns [A, B]
+// returns a lis tof distinct elements
+
+// .maxBy
+listOf(3, 4, 8).maxBy() // returns 8
+// returns tha highest
+
+// .getOrElse
+listOf("Markus", "Fenrew").getOrElse("Klorida") { 0 } // returns Klorida if it is in the list, or else 0
+
+// .windowed
+"abba".windowed(2)
+// returns an array with slices of 2 ("ab", "bb", "ba")
+
 
 // REGEX
 // .match
